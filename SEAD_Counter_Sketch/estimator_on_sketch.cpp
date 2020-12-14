@@ -274,7 +274,7 @@ int main(int argc, char *argv[])
 		long long t3 = (LL)s[0]->icebuckets_query(str);
 		long long t4 = (LL)ct[0]->Query(str,read_packet_per_times);
 
-		if (c++ < 0.9999 * flow_num)
+		if (c++ < 0.99 * flow_num)
 		{
 			aae_sead_m += (abs)(t1 - it->second);
 			aae_sac_m += (abs)(t2 - it->second);
@@ -291,9 +291,9 @@ int main(int argc, char *argv[])
 			if (aae_ice_e < 0)
 				printf("floating point error?\n Please retry\n");
 			aae_sead_e += (abs)(t1 - it->second);
-			printf("t1: %lld, second: %d, aae_sead_e: %f\n", t1, it->second, aae_sead_e);
+			//printf("t1: %lld, second: %d, aae_sead_e: %f\n", t1, it->second, aae_sead_e);
 			aae_sac_e += (abs)(t2 - it->second);
-			printf("t2: %lld, second: %d, aae_sac_e: %f\n", t2, it->second, aae_sac_e);
+			//printf("t2: %lld, second: %d, aae_sac_e: %f\n", t2, it->second, aae_sac_e);
 			aae_ice_e += (abs)(t3 - it->second);
 			aae_ct_e+= (abs)(t4 - it->second);
 			are_sead_e += (abs)(t1 - it->second) / (double)it->second;
@@ -323,25 +323,25 @@ int main(int argc, char *argv[])
 	are_ct = are_ct / flow_num;
 
 
-	aae_sead_m = aae_sead_m / flow_num / 0.9999;
-	aae_sac_m = aae_sac_m / flow_num / 0.9999;
-	aae_ice_m = aae_ice_m / flow_num / 0.9999;
-	aae_ct_m = aae_ct_m / flow_num / 0.9999;
-	are_sead_m = are_sead_m / flow_num / 0.9999;
-	are_sac_m = are_sac_m / flow_num / 0.9999;
-	are_ice_m = are_ice_m / flow_num / 0.9999;
-	are_ct_m = are_ct_m / flow_num / 0.9999;
+	aae_sead_m = aae_sead_m / flow_num / 0.99;
+	aae_sac_m = aae_sac_m / flow_num / 0.99;
+	aae_ice_m = aae_ice_m / flow_num / 0.99;
+	aae_ct_m = aae_ct_m / flow_num / 0.99;
+	are_sead_m = are_sead_m / flow_num / 0.99;
+	are_sac_m = are_sac_m / flow_num / 0.99;
+	are_ice_m = are_ice_m / flow_num / 0.99;
+	are_ct_m = are_ct_m / flow_num / 0.99;
 
 	//printf("are_sead:%f\n", are_sead_e);
 
-	aae_sead_e = aae_sead_e / flow_num / 0.0001;
-	aae_sac_e = aae_sac_e / flow_num / 0.0001;
-	aae_ice_e = aae_ice_e / flow_num / 0.0001;
-	aae_ct_e = aae_ct_e / flow_num / 0.0001;
-	are_sead_e = are_sead_e / flow_num / 0.0001;
-	are_sac_e = are_sac_e / flow_num / 0.0001;
-	are_ice_e = are_ice_e / flow_num / 0.0001;
-	are_ct_e = are_ct_e / flow_num / 0.0001;
+	aae_sead_e = aae_sead_e / flow_num / 0.01;
+	aae_sac_e = aae_sac_e / flow_num / 0.01;
+	aae_ice_e = aae_ice_e / flow_num / 0.01;
+	aae_ct_e = aae_ct_e / flow_num / 0.01;
+	are_sead_e = are_sead_e / flow_num / 0.01;
+	are_sac_e = are_sac_e / flow_num / 0.01;
+	are_ice_e = are_ice_e / flow_num / 0.01;
+	are_ct_e = are_ct_e / flow_num / 0.01;
 
 	printf("aae_sead = %f\n", aae_sead);
 	printf("aae_sead_m = %f\n", aae_sead_m);
