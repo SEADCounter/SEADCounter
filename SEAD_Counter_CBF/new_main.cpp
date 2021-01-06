@@ -26,7 +26,7 @@ int main()
 	greeting();
 	string dataset;
 	cout<<"To test SAC on different datasets,"<<endl;
-    cout<<"Type 'CAIDA','webpage' or 'synthetic'"<<endl;
+    cout<<"Type 'CAIDA','webpage', 'kosarak' or 'synthetic'"<<endl;
 	cin >> dataset;
 	double start, ends;
 	int sketch, arr, version = 0;
@@ -45,8 +45,6 @@ int main()
 	cin >> sketch;
 
 	if (dataset == "CAIDA") {
-
-
 		arr = 12;
 		ofstream file;
 		char FILE_NAME_TEMPLATE[100] = "../output/output_cbf/caida_%d.txt";
@@ -62,8 +60,6 @@ int main()
 		}
 	}
 	else if (dataset == "webpage") {
-
-
 		arr = 12;
 		ofstream file;
 		char FILE_NAME_TEMPLATE[100] = "../output/output_cbf/webpage_%d.txt";
@@ -79,9 +75,7 @@ int main()
 		}
 	}
 	else if (dataset == "synthetic") {
-
 		double a;
-
 		for (int i = 11; i <= 20; i++) {
 			arr = 12;
 			a = 1.0 * i / 10;
@@ -97,6 +91,21 @@ int main()
 				file << bits_in_elements << resetiosflags(ios::fixed);
 				file << "  " << err << endl;
 			}
+		}
+	}
+	else if (dataset == "kosarak") {
+		arr = 12;
+		ofstream file;
+		char FILE_NAME_TEMPLATE[100] = "../output/output_cbf/kosarak_%d.txt";
+		char file_name[100];
+		sprintf(file_name, FILE_NAME_TEMPLATE, sketch);
+		file.open(file_name);
+		file << "Bits_in_elements(in Bit) FPP" << endl;
+		for (int l = start; l < ends; l += (ends - start) / 12) {
+			kosarak_experiment(sketch, version, arr, l, bits_in_elements, err);
+			file << setiosflags(ios::fixed) << setprecision(2);
+			file << bits_in_elements << resetiosflags(ios::fixed);
+			file << "  " << err << endl;
 		}
 	}
 	else {
