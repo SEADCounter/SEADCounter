@@ -107,7 +107,7 @@ void CAIDA_experiment(int number, double &ret_error, int version, double n, int 
 	char filename[35];
 	memset(filename, 0, sizeof(char) * 15);
 
-	sprintf(filename, "../dataset/CAIDA.dat");
+	sprintf(filename, "../dataset/CAIDA_large.dat");
 	//  
 	FILE *file_stream = fopen(filename, "rb");
 	double time_count = 0;
