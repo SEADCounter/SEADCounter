@@ -1,5 +1,5 @@
 #pragma once
-#include "sac.h"
+#include "sead.h"
 #include <algorithm>
 #include <cstring>
 #include <string.h>
@@ -14,15 +14,15 @@
 
 using namespace std;
 
-// including the operations of CU: Insert, Delete and Query; including the operations of dynamic version of CU: dynamic_sac_insert, dynamic_sac_query; 
-// including the operations of static version of CU: static_sac_insert, static_sac_query. check function is used to debug and output str's corresponding
+// including the operations of CU: Insert, Delete and Query; including the operations of dynamic version of CU: dynamic_sead_insert, dynamic_sead_query; 
+// including the operations of static version of CU: static_sead_insert, static_sead_query. check function is used to debug and output str's corresponding
 // hash table content.
 class CUSketch:public class_sketches
 {
 private:
     BOBHash * bobhash[20];
     int index[20];
-    sead_c *sac_counter[20];
+    sead_c *sead_counter[20];
     int *counter[20];
     ICEBuckets *icebuc;
     SmallActiveCounter *SAC;
@@ -44,8 +44,8 @@ public:
             counter[i] = new int[w];
             memset(counter[i], 0, sizeof(int) * w);
             
-            sac_counter[i] = new sead_c[w];
-            memset(sac_counter[i], 0, sizeof(sead_c) * w);
+            sead_counter[i] = new sead_c[w];
+            memset(sead_counter[i], 0, sizeof(sead_c) * w);
             bobhash[i] = new BOBHash(i + 1000);
         }
 
@@ -94,8 +94,8 @@ public:
 		}
 		return min_value;
 	}
-	//insert function for dynamic version SAC
-	void dynamic_sac_insert(const char *str, int c, LL *gamma,bool sp_negative=true) { 
+	//insert function for dynamic version SEAD
+	void dynamic_sead_insert(const char *str, int c, LL *gamma,bool sp_negative=true) { 
 		int max_possible_value=sp_negative?MAX_CNT_CO:MAX_CNT_CO_P;
 		int min_value = max_possible_value;
 		int temp;
@@ -103,65 +103,65 @@ public:
 		for (int i = 0; i < d; i++)
 		{
 			index[i] = (bobhash[i]->run(str, strlen(str))) % w;
-			temp = sac_counter[i][index[i]];
+			temp = sead_counter[i][index[i]];
 			min_value = temp < min_value ? temp : min_value;
 		}
 		for (int i = 0; i < d; i++)
 		{
-			if (sac_counter[i][index[i]]== min_value) {
-				adding(sac_counter[i][index[i]], c, gamma,sp_negative);
-				index_value = sac_counter[i][index[i]];
+			if (sead_counter[i][index[i]]== min_value) {
+				adding(sead_counter[i][index[i]], c, gamma,sp_negative);
+				index_value = sead_counter[i][index[i]];
 			}
 		}
 		for (int i = 0; i<d; ++i) {
-			if (predict(sac_counter[i][index[i]], gamma,sp_negative) < predict(min_value,gamma,sp_negative) + c) {
-				sac_counter[i][index[i]] = index_value;
+			if (predict(sead_counter[i][index[i]], gamma,sp_negative) < predict(min_value,gamma,sp_negative) + c) {
+				sead_counter[i][index[i]] = index_value;
 			}
 		}
 	}
-	//query function for dynamic version SAC
-	int dynamic_sac_query(const char *str, LL *gamma,bool sp_negative=true) {
+	//query function for dynamic version SEAD
+	int dynamic_sead_query(const char *str, LL *gamma,bool sp_negative=true) {
 		int min_value = sp_negative?MAX_CNT_CO:MAX_CNT_CO_P;
 		int temp;
 		int ind = 0;
 		for (int i = 0; i < d; i++)
 		{
 			index[i] = (bobhash[i]->run(str, strlen(str))) % w;
-			temp = sac_counter[i][index[i]];
+			temp = sead_counter[i][index[i]];
 			if (temp < min_value) {
 				min_value = temp;
 			}
 		}
 		return predict(min_value, gamma,sp_negative);
 	}
-	//insert function for static version SAC
-	void static_sac_insert(const char *str, int l_sign, LL *gamma,bool sp_negative=true) { 
+	//insert function for static version SEAD
+	void static_sead_insert(const char *str, int l_sign, LL *gamma,bool sp_negative=true) { 
 		int max_possible_value=sp_negative?MAX_CNT_CO:MAX_CNT_CO_P;
 		int min_value = max_possible_value;
 		int temp;
 		for (int i = 0; i < d; i++)
 		{
 			index[i] = (bobhash[i]->run(str, strlen(str))) % w;
-			temp = sac_counter[i][index[i]];
+			temp = sead_counter[i][index[i]];
 			min_value = temp < min_value ? temp : min_value;
 		}
 		for (int i = 0; i < d; i++)
 		{
-			if (sac_counter[i][index[i]] == min_value) {
-				add_one(sac_counter[i][index[i]], l_sign, gamma,sp_negative);
+			if (sead_counter[i][index[i]] == min_value) {
+				add_one(sead_counter[i][index[i]], l_sign, gamma,sp_negative);
 			}
 		}
 	}
 
-	//query function for static version of SAC
-	int static_sac_query(const char *str,int l_sign, LL *gamma,bool sp_negative=true) {
+	//query function for static version of SEAD
+	int static_sead_query(const char *str,int l_sign, LL *gamma,bool sp_negative=true) {
 		int max_possible_value=sp_negative?MAX_CNT_CO:MAX_CNT_CO_P;
 		int min_value = max_possible_value;
 		int temp;
 		for (int i = 0; i < d; i++)
 		{
 			index[i] = (bobhash[i]->run(str, strlen(str))) % w;
-			temp = sac_counter[i][index[i]];
+			temp = sead_counter[i][index[i]];
 			if (temp < min_value) {
 				min_value = temp;
 			}
@@ -259,7 +259,7 @@ public:
         for(int i = 0; i < d; i++)
         {
             delete[] counter[i];
-            delete[] sac_counter[i];
+            delete[] sead_counter[i];
             delete bobhash[i];
         }
         delete icebuc;

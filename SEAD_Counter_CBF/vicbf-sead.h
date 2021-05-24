@@ -1,13 +1,13 @@
 //
-//  VICBF-SAC.h
+//  VICBF-SEAD.h
 //  CBF
 //
 //  Created by xy on 2019/2/22.
 //  Copyright © 2019 xy. All rights reserved.
 //
 
-#ifndef VI_CBF_SAC_h
-#define VI_CBF_SAC_h
+#ifndef VI_CBF_SEAD_h
+#define VI_CBF_SEAD_h
 
 
 #include <algorithm>
@@ -15,7 +15,7 @@
 #include "sketch.h"
 #include <string.h>
 #include "bobhash.h"
-#include "sac.h"
+#include "sead.h"
 #include <iostream>
 
 using namespace std;
@@ -37,7 +37,7 @@ private:
     uint64_t hash_value;
 public:
     VI_CBF(int _w,int _d){ //w is the size of the hash area, d is the number of hash functions in the Mediean trick
-//VI-CBF的d相比于CBF要为原来�?4/7. 同理针对于SAC_VI-CBF的版本�?
+//VI-CBF的d相比于CBF要为原来�?4/7. 同理针对于SEAD_VI-CBF的版本�?
         counter_index_size = 20;
         w = _w;
         d = _d;
@@ -90,16 +90,16 @@ public:
             int_counter[i][index[i]] -= c * VI_Counter[(bobhash[i+d]->run(str, strlen(str)))%L];
         }
     }
-    //the insert function for dynamic sign bits SAC, the function adds c to "d mapped counters"
-    void dynamic_sac_insert(const char *str,int c,LL *gamma){
+    //the insert function for dynamic sign bits SEAD, the function adds c to "d mapped counters"
+    void dynamic_sead_insert(const char *str,int c,LL *gamma){
         for(int i = 0; i < d; i++){
             index[i] = (bobhash[i]->run(str, strlen(str))) % w;
             adding(counter[i][index[i]],c* VI_Counter[(bobhash[i+d]->run(str, strlen(str)))%L],gamma);
         }
     }
-    //the query function for dynamic sign bits SAC
-    // 在用sac的insert的时候，adding里的long_maxi要改成long_maxi_VI
-    int dynamic_sac_query(const char *str, LL *gamma)
+    //the query function for dynamic sign bits SEAD
+    // 在用sead的insert的时候，adding里的long_maxi要改成long_maxi_VI
+    int dynamic_sead_query(const char *str, LL *gamma)
     {
         sead_c min_value = MAX_CNT_CO;
         sead_c temp;
@@ -117,8 +117,8 @@ public:
         return 1;
         
     }
-    //the insert function for fixed sign bits SAC, the function adds c to "d mapped counters"
-    void static_sac_insert(const char *str,int l_sign, LL *gamma) {
+    //the insert function for fixed sign bits SEAD, the function adds c to "d mapped counters"
+    void static_sead_insert(const char *str,int l_sign, LL *gamma) {
         for (int i = 0; i < d; i++) {
             index[i] = (bobhash[i]->run(str, strlen(str))) % w;
             int m = VI_Counter[(bobhash[i+d]->run(str, strlen(str))) %L];
@@ -126,8 +126,8 @@ public:
                 add_one(counter[i][index[i]],l_sign, gamma);
         }
     }
-    //the query function for fixed sign bits SAC
-    int static_sac_query(const char *str,int l_sign, LL *gamma)
+    //the query function for fixed sign bits SEAD
+    int static_sead_query(const char *str,int l_sign, LL *gamma)
     {
         sead_c min_value = MAX_CNT_CO;
         sead_c temp;
@@ -162,4 +162,4 @@ public:
     }
 };
 
-#endif /* CBF_SAC_h */
+#endif /* CBF_SEAD_h */

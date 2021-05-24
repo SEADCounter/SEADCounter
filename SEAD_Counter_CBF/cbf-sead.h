@@ -1,13 +1,13 @@
 //
-//  CBF-SAC.h
+//  CBF-SEAD.h
 //  CBF
 //
 //  Created by xy on 2019/2/22.
 //  Copyright © 2019 xy. All rights reserved.
 //
 
-#ifndef CBF_SAC_h
-#define CBF_SAC_h
+#ifndef CBF_SEAD_h
+#define CBF_SEAD_h
 
 #pragma once
 #include <algorithm>
@@ -15,7 +15,7 @@
 #include "sketch.h"
 #include <string.h>
 #include "bobhash.h"
-#include "sac.h"
+#include "sead.h"
 #include <iostream>
 using namespace std;
 class CBF:public class_sketches{
@@ -73,15 +73,15 @@ public:
             int_counter[i][index[i]] -= c;
         }
     }
-    //the insert function for dynamic sign bits SAC, the function adds c to "d mapped counters"
-    void dynamic_sac_insert(const char *str,int c,LL *gamma){
+    //the insert function for dynamic sign bits SEAD, the function adds c to "d mapped counters"
+    void dynamic_sead_insert(const char *str,int c,LL *gamma){
         for(int i = 0; i < d; i++){
             index[i] = (bobhash[i]->run(str, strlen(str))) % w;
             adding(counter[i][index[i]],c,gamma);
         }
     }
-    //the query function for dynamic sign bits SAC
-    int dynamic_sac_query(const char *str, LL *gamma)
+    //the query function for dynamic sign bits SEAD
+    int dynamic_sead_query(const char *str, LL *gamma)
     {
         sead_c min_value = MAX_CNT_CO;
         sead_c temp;
@@ -95,15 +95,15 @@ public:
         return predict(min_value, gamma);
         
     }
-    //the insert function for fixed sign bits SAC, the function adds c to "d mapped counters"
-    void static_sac_insert(const char *str,int l_sign, LL *gamma) {
+    //the insert function for fixed sign bits SEAD, the function adds c to "d mapped counters"
+    void static_sead_insert(const char *str,int l_sign, LL *gamma) {
         for (int i = 0; i < d; i++) {
             index[i] = (bobhash[i]->run(str, strlen(str))) % w;
             add_one(counter[i][index[i]],l_sign, gamma);
         }
     }
-    //the query function for fixed sign bits SAC
-    int static_sac_query(const char *str,int l_sign, LL *gamma)
+    //the query function for fixed sign bits SEAD
+    int static_sead_query(const char *str,int l_sign, LL *gamma)
     {
         sead_c min_value = MAX_CNT_CO;
         sead_c temp;
@@ -134,4 +134,4 @@ public:
     }
 };
 
-#endif /* CBF_SAC_h */
+#endif /* CBF_sead_h */

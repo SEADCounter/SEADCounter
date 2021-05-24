@@ -6,13 +6,13 @@
 #include "sketch.h"
 #include "bobhash.h"
 #include "params.h"
-#include "sac.h"
+#include "sead.h"
 #include <iostream>
 
 
 
-// including the operations of C: Insert, Delete and Query; including the operations of dynamic version of C: dynamic_sac_insert, dynamic_sac_query; 
-// including the operations of static version of C: static_sac_insert, static_sac_query. check function is used to debug and output str's corresponding
+// including the operations of C: Insert, Delete and Query; including the operations of dynamic version of C: dynamic_sead_insert, dynamic_sead_query; 
+// including the operations of static version of C: static_sead_insert, static_sead_query. check function is used to debug and output str's corresponding
 // hash table content.
 
 
@@ -123,8 +123,8 @@ public:
 			}
 		}
 	}
-	//the insert functions for dynamic sign bits version SAC
-    void dynamic_sac_insert(const char *str,int c,LL *gamma,bool sp_negative=true){
+	//the insert functions for dynamic sign bits version SEAD
+    void dynamic_sead_insert(const char *str,int c,LL *gamma,bool sp_negative=true){
 
         int g = 0;
         for(int i = 0; i < d; i++)
@@ -145,8 +145,8 @@ public:
 
         }
     }
-    //the query function for dynamic sign bits SAC
-	int dynamic_sac_query(const char *str, LL *gamma,bool sp_negative=true) {
+    //the query function for dynamic sign bits SEAD
+	int dynamic_sead_query(const char *str, LL *gamma,bool sp_negative=true) {
 		int temp;
 		int res[20];
 		int g;
@@ -169,8 +169,8 @@ public:
 		}
 		return r;
 	}
-	//the insert function for static sign bits version SAC
-	void static_sac_insert(const char *str, int l_sign, LL *gamma,bool sp_negative=true) {
+	//the insert function for static sign bits version SEAD
+	void static_sead_insert(const char *str, int l_sign, LL *gamma,bool sp_negative=true) {
 
 		int g = 0;
 		for (int i = 0; i < d; i++)
@@ -190,8 +190,8 @@ public:
 			}
 		}
 	}
-	//query function for static version SAC
-	int static_sac_query(const char *str,int l_sign, LL *gamma,bool sp_negative=true) {
+	//query function for static version SEAD
+	int static_sead_query(const char *str,int l_sign, LL *gamma,bool sp_negative=true) {
 		int temp;
 		int res[20];
 		int g;

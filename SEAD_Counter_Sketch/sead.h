@@ -134,11 +134,11 @@ LL predict(sead_c x, LL* gamma,bool sp_negative=true) {
 //this is the add one function for fixed version of 16-bit SAC
 void add_one(sead_c& x, int l_sign, LL* gamma,bool sp_negative=true) {
 	sead_c MAX_CNT_C = sp_negative?MAX_CNT_CO:MAX_CNT_CO_P;
-	if (predict(x, l_sign,gamma,sp_negative) + 1 >= max_predict_sta) {
+	/* if (predict(x, l_sign,gamma,sp_negative) + 1 >= max_predict_sta) {
 //		cout << "overflow!" << endl;
 		x = MAX_CNT_C;
 		return;
-	}
+	}*/
 	sead_c delta = sp_negative?second_high_bit:high_bit;
 	sead_c y=x<0?(~x+1):x;
 	int sign_bits = 0;

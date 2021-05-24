@@ -10,12 +10,12 @@
 #include "bobhash.h"
 #include "new_exp.h"
 #include "sketch.h"
-#include "cbf-sac.h"
-#include "vicbf-sac.h"
+#include "cbf-sead.h"
+#include "vicbf-sead.h"
 #include <limits>
 #include <utility>
 #include <time.h>
-#include "sac.h"
+#include "sead.h"
 
 using namespace std;
 
@@ -25,7 +25,7 @@ int main()
 {
 	greeting();
 	string dataset;
-	cout<<"To test SAC on different datasets,"<<endl;
+	cout<<"To test SEAD on different datasets,"<<endl;
     cout<<"Type 'CAIDA','webpage', 'kosarak' or 'synthetic'"<<endl;
 	cin >> dataset;
 	double start, ends;
@@ -41,7 +41,7 @@ int main()
 	cin >> start;
 	cout << "to:" << endl;
 	cin >> ends;
-	cout << "type 0~3 for 'CBF','VI-CBF','SAC-CBF', or 'SAC-VI-CBF' sketches" << endl;
+	cout << "type 0~3 for 'CBF','VI-CBF','SEAD-CBF', or 'SEAD-VI-CBF' sketches" << endl;
 	cin >> sketch;
 
 	if (dataset == "CAIDA") {
@@ -115,7 +115,7 @@ int main()
 }
 
 /* sketch: which sketch to use
- * version: dynamic or static SAC
+ * version: dynamic or static SEAD
  * arr: arrays in sketch
  * start -> ends: range of memory use
  * l : memory use

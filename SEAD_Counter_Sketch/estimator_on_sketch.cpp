@@ -13,7 +13,7 @@
 #include "cmsketch.h"
 #include "cusketch.h"
 #include "params.h"
-#include "sac.h"
+#include "sead.h"
 #include "ICE_bucket.h"
 #include "SmallActiveCounter.h"
 #include "counter_tree.h"
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 	}
 	for (int i = 0; i < LOOP_NUM; ++i)
 		ct[i] = new CT(mid);
-	
+
 	for (int m = 0; m < LOOP_NUM; ++m)
 		s[m] = new CUSketch(memory_use * 1024 * 8 / (per_estimator_int * sketch_array), sketch_array);
 
@@ -162,24 +162,12 @@ int main(int argc, char *argv[])
 	for (int t = 0; t < LOOP_NUM; t++)
 	{
 		for (int i = 0; i < packet_num; i++)
-			s[t]->dynamic_sac_insert(insert[i], 1, gamma_2, false);
+			s[t]->dynamic_sead_insert(insert[i], 1, gamma_2, false);
 	}
 	clock_gettime(CLOCK_MONOTONIC, &time2);
 	resns = (long long)(time2.tv_sec - time1.tv_sec) * 1000000000LL + (time2.tv_nsec - time1.tv_nsec);
 	double throughput_sead = (double)1000.0 * LOOP_NUM * packet_num / resns;
 	printf("throughput of SEAD on sketch (insert): %.6lf Mops\n", throughput_sead);
-
-
-	clock_gettime(CLOCK_MONOTONIC, &time1);
-	for (int t = 0; t < LOOP_NUM; t++)
-	{
-		for (int i = 0; i < packet_num; i++)
-			ct[t]->Insert(insert[i]);
-	}
-	clock_gettime(CLOCK_MONOTONIC, &time2);
-	resns = (long long)(time2.tv_sec - time1.tv_sec) * 1000000000LL + (time2.tv_nsec - time1.tv_nsec);
-	double throughput_ct = (double)1000.0 * LOOP_NUM * packet_num / resns;
-	printf("throughput of SEAD on CT (insert): %.6lf Mops\n", throughput_ct);
 
 	clock_gettime(CLOCK_MONOTONIC, &time1);
 	for (int t = 0; t < LOOP_NUM; t++)
@@ -192,6 +180,17 @@ int main(int argc, char *argv[])
 	resns = (long long)(time2.tv_sec - time1.tv_sec) * 1000000000LL + (time2.tv_nsec - time1.tv_nsec);
 	double throughput_sac = (double)1000.0 * LOOP_NUM * packet_num / resns;
 	printf("throughput of SAC on sketch(insert): %.6lf Mops\n", throughput_sac);
+
+	clock_gettime(CLOCK_MONOTONIC, &time1);
+	for (int t = 0; t < LOOP_NUM; t++)
+	{
+		for (int i = 0; i < packet_num; i++)
+			ct[t]->Insert(insert[i]);
+	}
+	clock_gettime(CLOCK_MONOTONIC, &time2);
+	resns = (long long)(time2.tv_sec - time1.tv_sec) * 1000000000LL + (time2.tv_nsec - time1.tv_nsec);
+	double throughput_ct = (double)1000.0 * LOOP_NUM * packet_num / resns;
+	printf("throughput of CT (insert): %.6lf Mops\n", throughput_ct);
 
 	clock_gettime(CLOCK_MONOTONIC, &time1);
 	for (int t = 0; t < LOOP_NUM; t++)
@@ -211,7 +210,7 @@ int main(int argc, char *argv[])
 	for (int t = 0; t < LOOP_NUM; t++)
 	{
 		for (int i = 0; i < flow_num; i++)
-			res_tmp = (LL)s[t]->dynamic_sac_query(query[i], gamma_2, false);
+			res_tmp = (LL)s[t]->dynamic_sead_query(query[i], gamma_2, false);
 	}
 	clock_gettime(CLOCK_MONOTONIC, &time2);
 	resns = (long long)(time2.tv_sec - time1.tv_sec) * 1000000000LL + (time2.tv_nsec - time1.tv_nsec);
@@ -230,18 +229,17 @@ int main(int argc, char *argv[])
 	throughput_sac = (double)1000.0 * LOOP_NUM * flow_num / resns;
 	printf("throughput of SAC on sketch (query): %.6lf Mops\n", throughput_sac);
 
-
 	clock_gettime(CLOCK_MONOTONIC, &time1);
 	for (int t = 0; t < LOOP_NUM; t++)
 	{
 		for (int i = 0; i < flow_num; i++)
-			res_tmp = ct[t]->Query(query[i],read_packet_per_times);
+			res_tmp = ct[t]->Query(query[i], read_packet_per_times);
 	}
 	clock_gettime(CLOCK_MONOTONIC, &time2);
 	resns = (long long)(time2.tv_sec - time1.tv_sec) * 1000000000LL + (time2.tv_nsec - time1.tv_nsec);
 
 	throughput_sac = (double)1000.0 * LOOP_NUM * flow_num / resns;
-	printf("throughput of SAC on sketch (query): %.6lf Mops\n", throughput_sac);
+	printf("throughput of CT (query): %.6lf Mops\n", throughput_sac);
 
 	clock_gettime(CLOCK_MONOTONIC, &time1);
 	for (int t = 0; t < LOOP_NUM; t++)
@@ -262,29 +260,29 @@ int main(int argc, char *argv[])
 	vector<pair<string, int>> flows_num_vec(flows.begin(), flows.end());
 	sort(flows_num_vec.begin(), flows_num_vec.end(), comp);
 
-	double aae_ct,aae_sead, aae_sac, aae_ice, are_ct,are_sead, are_sac, are_ice = 0;
-	double aae_ct_m,aae_sead_m, aae_sac_m, aae_ice_m, are_ct_m,are_sead_m, are_sac_m, are_ice_m = 0;
-	double aae_ct_e,aae_sead_e, aae_sac_e, aae_ice_e, are_ct_e,are_sead_e, are_sac_e, are_ice_e = 0;
+	double aae_ct, aae_sead, aae_sac, aae_ice, are_ct, are_sead, are_sac, are_ice = 0;
+	double aae_ct_m, aae_sead_m, aae_sac_m, aae_ice_m, are_ct_m, are_sead_m, are_sac_m, are_ice_m = 0;
+	double aae_ct_e, aae_sead_e, aae_sac_e, aae_ice_e, are_ct_e, are_sead_e, are_sac_e, are_ice_e = 0;
 
 	for (auto it = flows_num_vec.begin(); it != flows_num_vec.end(); ++it)
 	{
 		const char *str = (it->first).c_str();
-		long long t1 = (LL)s[0]->dynamic_sac_query(str, gamma_2, false);
+		long long t1 = (LL)s[0]->dynamic_sead_query(str, gamma_2, false);
 		long long t2 = s[0]->SmallActiveCounter_query(str);
 		long long t3 = (LL)s[0]->icebuckets_query(str);
-		long long t4 = (LL)ct[0]->Query(str,read_packet_per_times);
+		long long t4 = (LL)ct[0]->Query(str, read_packet_per_times);
 
 		if (c++ < 0.99 * flow_num)
 		{
 			aae_sead_m += (abs)(t1 - it->second);
 			aae_sac_m += (abs)(t2 - it->second);
 			aae_ice_m += (abs)(t3 - it->second);
-			aae_ct_m+= (abs)(t4 - it->second);
+			aae_ct_m += (abs)(t4 - it->second);
 			are_sead_m += (abs)(t1 - it->second) / (double)it->second;
 			are_sac_m += (abs)(t2 - it->second) / (double)it->second;
 			//printf("t2: %lld, second: %d, are_sac_m: %f\n",t2,it->second,are_sac_m);
 			are_ice_m += (abs)(t3 - it->second) / (double)it->second;
-			are_ct_m+= (abs)(t4 - it->second) / (double)it->second;
+			are_ct_m += (abs)(t4 - it->second) / (double)it->second;
 		}
 		else
 		{
@@ -295,21 +293,21 @@ int main(int argc, char *argv[])
 			aae_sac_e += (abs)(t2 - it->second);
 			//printf("t2: %lld, second: %d, aae_sac_e: %f\n", t2, it->second, aae_sac_e);
 			aae_ice_e += (abs)(t3 - it->second);
-			aae_ct_e+= (abs)(t4 - it->second);
+			aae_ct_e += (abs)(t4 - it->second);
 			are_sead_e += (abs)(t1 - it->second) / (double)it->second;
 			are_sac_e += (abs)(t2 - it->second) / (double)it->second;
 			are_ice_e += (abs)(t3 - it->second) / (double)it->second;
-			are_ct_e+= (abs)(t4 - it->second) / (double)it->second;
+			are_ct_e += (abs)(t4 - it->second) / (double)it->second;
 		}
 
 		aae_sead += (abs)(t1 - it->second);
 		aae_sac += (abs)(t2 - it->second);
 		aae_ice += (abs)(t3 - it->second);
-		aae_ct+= (abs)(t4 - it->second);
+		aae_ct += (abs)(t4 - it->second);
 		are_sead += (abs)(t1 - it->second) / (double)it->second;
 		are_sac += (abs)(t2 - it->second) / (double)it->second;
 		are_ice += (abs)(t3 - it->second) / (double)it->second;
-		are_ct+= (abs)(t4 - it->second) / (double)it->second;
+		are_ct += (abs)(t4 - it->second) / (double)it->second;
 		//	fprintf(fout, "%d   %f   %f   %f\n", it->second, (t1 - it->second) / (double)it->second, (t2 - it->second) / (double)it->second, (t3 - it->second) / (double)it->second);
 	}
 	//printf("are_sac: %f\n",are_sac);
@@ -321,7 +319,6 @@ int main(int argc, char *argv[])
 	are_sac = are_sac / flow_num;
 	are_ice = are_ice / flow_num;
 	are_ct = are_ct / flow_num;
-
 
 	aae_sead_m = aae_sead_m / flow_num / 0.99;
 	aae_sac_m = aae_sac_m / flow_num / 0.99;

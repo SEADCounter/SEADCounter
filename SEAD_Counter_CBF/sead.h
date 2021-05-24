@@ -48,7 +48,7 @@ void bprint(sead_c x) { //print binary value of x
 }
 
 
-int get_val(sead_c x, int base = 0) {//return the actual unsigned value stored in one SAC
+int get_val(sead_c x, int base = 0) {//return the actual unsigned value stored in one SEAD
 	//base is the starting scale. 0 meaning multiply by 2^0
 	unsigned short pos = 0; //0 means the seperating 0-bit starts at the front
 	sead_c delta = high_bit;
@@ -60,7 +60,7 @@ int get_val(sead_c x, int base = 0) {//return the actual unsigned value stored i
 	return ((ones & x) << (pos + base)) + pos*(1<<(base+COUNTER_SIZE-1));
 }
 
-int get_signed_val(sead_c x, int base = 0) { //return the actual signed value stored in one SAC
+int get_signed_val(sead_c x, int base = 0) { //return the actual signed value stored in one SEAD
 	if (x >= MAX_CNT_CO)return MAX_CNT;
 	if (x <= MIN_CNT_CO)return MIN_CNT;
 	unsigned short pos = 0;
@@ -84,9 +84,9 @@ int get_signed_val(sead_c x, int base = 0) { //return the actual signed value st
 	}
 }
 	
-//this function returns the predict value of an 16-bit static version SAC
+//this function returns the predict value of an 16-bit static version SEAD
 LL predict(sead_c x, int l_sign, LL* gamma,bool sp_negative=true) {  //l_sign is the length of sign section
-	sead_c delta = sp_negative?second_high_bit:high_bit; //This variable is used to get the value of certain bit in SAC
+	sead_c delta = sp_negative?second_high_bit:high_bit; //This variable is used to get the value of certain bit in SEAD
 	int total_length=sp_negative?COUNTER_SIZE-1:COUNTER_SIZE;
 	int sign_bits = 0;
 	double ret = 0;
@@ -106,7 +106,7 @@ LL predict(sead_c x, int l_sign, LL* gamma,bool sp_negative=true) {  //l_sign is
 	return (gamma[sign_bits] * (ones & y)+ret)*(x<0?-1:1);
 }
 
-//this function returns the predict value of an 16-bit dynamic version SAC
+//this function returns the predict value of an 16-bit dynamic version SEAD
 LL predict(sead_c x, LL* gamma,bool sp_negative=true) {
 	unsigned short pos = 0;
 	//sead_c delta = sp_negative?second_high_bit:high_bit;
@@ -131,7 +131,7 @@ LL predict(sead_c x, LL* gamma,bool sp_negative=true) {
 
 
 
-//this is the add one function for fixed version of 16-bit SAC
+//this is the add one function for fixed version of 16-bit SEAD
 void add_one(sead_c& x, int l_sign, LL* gamma,bool sp_negative=true) {
 	sead_c MAX_CNT_C = sp_negative?MAX_CNT_CO:MAX_CNT_CO_P;
 	if (predict(x, l_sign,gamma,sp_negative) + 1 >= max_predict_sta) {
@@ -155,7 +155,7 @@ void add_one(sead_c& x, int l_sign, LL* gamma,bool sp_negative=true) {
 	return;
 }
 
-//this is the minus one function for fixed version of 16-bit SAC
+//this is the minus one function for fixed version of 16-bit SEAD
 void minus_one(sead_c& x, int l_sign, LL* gamma,bool sp_negative=true) {
 	sead_c MIN_CNT_C = sp_negative?MIN_CNT_CO:0;
 	if (predict(x, l_sign,gamma,sp_negative) - 1 <= predict(MIN_CNT_C,l_sign,gamma,sp_negative)) {
@@ -226,7 +226,7 @@ void adding(sead_c& x, int c, LL* gamma,bool sp_negative=true) {
 	}
 }
 
-//this function substract c from the 16-bit Dynamic version of SAC
+//this function substract c from the 16-bit Dynamic version of SEAD
 void subtracting(sead_c& x, int c, LL* gamma,bool sp_negative=true) {
 	if (c < 0) { printf("illeagal subtracting\n"); return; }
 	sead_c MIN_CNT_C = sp_negative?MIN_CNT_CO:0;

@@ -6,7 +6,7 @@
 #include<string>
 #include <unordered_map>
 #include <fstream>
-#include "sac.h"
+#include "sead.h"
 #include "cmsketch.h"
 #include "cusketch.h"
 #include "csketch.h"
@@ -34,10 +34,15 @@ int main()
 	string dataset;
 	cin >> dataset;
 	if (dataset == "CAIDA") {
-		int sketch, arr, version = 0;
+		int sketch, arr, version = -1;
 		double start, ends;
-		cout << "type 0~5 for 'CM','CU','C', 'SACCM','SACCU' or 'SACC' sketches(no support for counter tree in this experiment)" << endl;
+		cout << "type 0~6 for 'CM','CU','C', 'Counter Tree', 'SEADCM','SEADCU' or 'SEADC' sketches" << endl;
 		cin >> sketch;
+		if (sketch >= 4)
+		{
+			cout << "type 0~1 for 'Dynamic Sign Bits' version or 'Static Sign Bits' version" << endl;
+			cin >> version;
+		}
 		cout << "type in number of arrays in sketch(type 0 for default setting)" << endl;
 		cin >> arr;
 		if (arr == 0)
@@ -56,14 +61,14 @@ int main()
 		file.open("../output/" + file_name);
 		file << "memory(in KB)  ARE  sigma    AAE    sigma" << endl;
 		for (int i = start; i < ends; i += (ends - start) / 5) {
-			CAIDA_experiment(10000000.0, err1, version, i, arr, sig1, sketch, err2, sig2);
+			CAIDA_experiment(3000000.0, err1, version, i, arr, sig1, sketch, err2, sig2);
 			file << i << "  " << err1 << "  " << sig1 << "  " << err2 << "  " << sig2 << endl;
 		}
 	}
 	else if (dataset == "webpage") {
 		int sketch, arr, version = -1;
 		double start, ends;
-		cout << "type 0~6 for 'CM','CU','C','Counter Tree','SACCM','SACCU' or 'SACC' sketches" << endl;
+		cout << "type 0~6 for 'CM','CU','C','Counter Tree','SEADCM','SEADCU' or 'SEADC' sketches" << endl;
 		cin >> sketch;
 		if (sketch >= 4)
 		{
@@ -95,7 +100,7 @@ int main()
 	else if (dataset == "synthetic") {
 		int sketch, arr, version = -1;
 		double start, ends;
-		cout << "type 0~6 for 'CM','CU','C','Counter Tree','SACCM','SACCU' or 'SACC' sketches" << endl;
+		cout << "type 0~6 for 'CM','CU','C','Counter Tree','SEADCM','SEADCU' or 'SEADC' sketches" << endl;
 		cin >> sketch;
 		if (sketch >= 4)
 		{

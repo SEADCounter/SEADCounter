@@ -4,7 +4,7 @@
 #include "sketch.h"
 #include <string.h>
 #include "bobhash.h"
-#include "sac.h"
+#include "sead.h"
 #include <iostream>
 #include "params.h"
 #include "ICE_bucket.h"
@@ -67,15 +67,15 @@ public:
 		return min_value;
 	}
 
-	//the insert function for dynamic sign bits SAC, the function adds c to "d mapped counters"
-	void dynamic_sac_insert(const char* str, int c, LL* gamma,bool sp_negative=true) {
+	//the insert function for dynamic sign bits SEAD, the function adds c to "d mapped counters"
+	void dynamic_sead_insert(const char* str, int c, LL* gamma,bool sp_negative=true) {
 		for (int i = 0; i < d; i++) {
 			index[i] = (bobhash[i]->run(str, strlen(str))) % w;
 			adding(counter[i][index[i]], c, gamma,sp_negative);
 		}
 	}
-	//the query function for dynamic sign bits SAC
-	int dynamic_sac_query(const char* str, LL* gamma,bool sp_negative=true)
+	//the query function for dynamic sign bits SEAD
+	int dynamic_sead_query(const char* str, LL* gamma,bool sp_negative=true)
 	{
 		sead_c min_value = sp_negative?MAX_CNT_CO:MAX_CNT_CO_P;
 		sead_c temp;
@@ -90,15 +90,15 @@ public:
 		return predict(min_value, gamma,sp_negative);
 
 	}
-	//the insert function for fixed sign bits SAC, the function adds c to "d mapped counters"
-	void static_sac_insert(const char* str, int l_sign, LL* gamma,bool sp_negative=true) {
+	//the insert function for fixed sign bits SEAD, the function adds c to "d mapped counters"
+	void static_sead_insert(const char* str, int l_sign, LL* gamma,bool sp_negative=true) {
 		for (int i = 0; i < d; i++) {
 			index[i] = (bobhash[i]->run(str, strlen(str))) % w;
 			add_one(counter[i][index[i]], l_sign, gamma,sp_negative );
 		}
 	}
-	//the query function for fixed sign bits SAC
-	int static_sac_query(const char* str, int l_sign, LL* gamma,bool sp_negative=true)
+	//the query function for fixed sign bits SEAD
+	int static_sead_query(const char* str, int l_sign, LL* gamma,bool sp_negative=true)
 	{
 		sead_c min_value = sp_negative?MAX_CNT_CO:MAX_CNT_CO_P;
 		sead_c temp;

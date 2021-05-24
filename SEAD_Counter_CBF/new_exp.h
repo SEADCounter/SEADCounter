@@ -10,10 +10,10 @@
 #include <unordered_set>
 #include <fstream>
 #include <sstream>
-#include "sac.h"
+#include "sead.h"
 #include "bobhash.h"
-#include "cbf-sac.h"
-#include "vicbf-sac.h"
+#include "cbf-sead.h"
+#include "vicbf-sead.h"
 #include <limits>
 #include <time.h>
 #include <utility>
@@ -32,7 +32,7 @@ int counter[810];
 void CAIDA_experiment(int sketch, int version, int arr, int l, double& bits_in_elements, double& err) {
 	//n is the memory size(in KB) and m is the number of arrays used in the sketch
 	// this experiment uses CAIDA files in the folder '60s'
-	cout << "your sketch number is: " << sketch << " (0~3 for 'CBF', 'VI-CBF', 'SACCBF', or 'VI-SACCBF')" << endl;
+	cout << "your sketch number is: " << sketch << " (0~3 for 'CBF', 'VI-CBF', 'SEADCBF', or 'VI-SEADCBF')" << endl;
 	int m = 12;
 	int n = l;
 	class_sketches* s[20];
@@ -54,13 +54,13 @@ void CAIDA_experiment(int sketch, int version, int arr, int l, double& bits_in_e
 		for (int i = 0; i < 12; ++i) {
 			s[i] = new CBF(n * 1024 / 2 / m, m);
 		}
-		cout << "SAC CBF with " << n << "KB hash memory generated!" << endl;
+		cout << "SEAD CBF with " << n << "KB hash memory generated!" << endl;
 	}
 	if (sketch == 3) {
 		for (int i = 0; i < 12; ++i) {
 			s[i] = new VI_CBF(n * 1024 / 2 / m, m);
 		}
-		cout << "SAC VI-CBF with " << n << "KB hash memory generated!" << endl;
+		cout << "SEAD VI-CBF with " << n << "KB hash memory generated!" << endl;
 	}
 
 	
@@ -96,7 +96,7 @@ void CAIDA_experiment(int sketch, int version, int arr, int l, double& bits_in_e
 			if (sketch <= 1)
 				s[k]->Insert(it1->first.c_str(), it1->second);
 			else {
-				s[k]->dynamic_sac_insert(it1->first.c_str(), it1->second, gamma_2);
+				s[k]->dynamic_sead_insert(it1->first.c_str(), it1->second, gamma_2);
 			}
 		}
 		// read random sequence
@@ -114,7 +114,7 @@ void CAIDA_experiment(int sketch, int version, int arr, int l, double& bits_in_e
 					fpp[k] += 1;
 			}
 			else{
-				if (s[k]->dynamic_sac_query(string_key.c_str(), gamma_2) != 0)
+				if (s[k]->dynamic_sead_query(string_key.c_str(), gamma_2) != 0)
 					fpp[k] += 1;
 			}
 			fgetc(fin2);
@@ -133,7 +133,7 @@ void CAIDA_experiment(int sketch, int version, int arr, int l, double& bits_in_e
 
 void kosarak_experiment(int sketch, int version, int arr, int l, double& bits_in_elements, double& err) {
 	//n is the memory size(in KB) and m is the number of arrays used in the sketch
-	cout << "your sketch number is: " << sketch << " (0~3 for 'CBF', 'VI-CBF', 'SACCBF', or 'VI-SACCBF')" << endl;
+	cout << "your sketch number is: " << sketch << " (0~3 for 'CBF', 'VI-CBF', 'SEADCBF', or 'VI-SEADCBF')" << endl;
 	int m = 3;
 	int n = l;
 	class_sketches* s;
@@ -147,11 +147,11 @@ void kosarak_experiment(int sketch, int version, int arr, int l, double& bits_in
 	}
 	if (sketch == 2) {
 		s = new CBF(n * 1024 / 2 / m, m);
-		cout << "SAC CBF with " << n << "KB hash memory generated!" << endl;
+		cout << "SEAD CBF with " << n << "KB hash memory generated!" << endl;
 	}
 	if (sketch == 3) {
 		s = new VI_CBF(n * 1024 / 2 / m, m);
-		cout << "SAC VI-CBF with " << n << "KB hash memory generated!" << endl;
+		cout << "SEAD VI-CBF with " << n << "KB hash memory generated!" << endl;
 	}
 
 	double fpp;
@@ -182,7 +182,7 @@ void kosarak_experiment(int sketch, int version, int arr, int l, double& bits_in
 		if (sketch <= 1)
 			s->Insert(it1->first.c_str(), it1->second);
 		else {
-			s->dynamic_sac_insert(it1->first.c_str(), it1->second, gamma_2);
+			s->dynamic_sead_insert(it1->first.c_str(), it1->second, gamma_2);
 		}
 	}
 	// read random sequence
@@ -196,7 +196,7 @@ void kosarak_experiment(int sketch, int version, int arr, int l, double& bits_in
 				fpp += 1;
 		}
 		else  {
-			if (s->dynamic_sac_query(tmp.c_str(), gamma_2) != 0)
+			if (s->dynamic_sead_query(tmp.c_str(), gamma_2) != 0)
 				fpp += 1;
 		}
 	}
@@ -208,7 +208,7 @@ void webpage_experiment(int sketch, int version, int arr, int l, double& bits_in
 	//n is the memory size(in KB) and m is the number of arrays used in the sketch
 	int n = l;
 	int m = 12;
-	cout << "your sketch number is: " << sketch << " (0~3 for 'CBF', 'VI-CBF', 'SACCBF', or 'VI-SACCBF')" << endl;
+	cout << "your sketch number is: " << sketch << " (0~3 for 'CBF', 'VI-CBF', 'SEADCBF', or 'VI-SEADCBF')" << endl;
 	class_sketches* s[20];
 	if (sketch == 0) {
 
@@ -228,13 +228,13 @@ void webpage_experiment(int sketch, int version, int arr, int l, double& bits_in
 		for (int i = 0; i < 12; ++i) {
 			s[i] = new CBF(n * 1024 / m, m);
 		}
-		cout << "SAC CBF with " << n << "KB hash memory generated!" << endl;
+		cout << "SEAD CBF with " << n << "KB hash memory generated!" << endl;
 	}
 	if (sketch == 3) {
 		for (int i = 0; i < 12; ++i) {
 			s[i] = new VI_CBF(n * 1024 / m, m);
 		}
-		cout << "SAC VI-CBF with " << n << "KB hash memory generated!" << endl;
+		cout << "SEAD VI-CBF with " << n << "KB hash memory generated!" << endl;
 	}
 
 	
@@ -271,7 +271,7 @@ void webpage_experiment(int sketch, int version, int arr, int l, double& bits_in
 			if (sketch <= 1)
 				s[k]->Insert(it1->first.c_str(), it1->second);
 			else  {
-				s[k]->dynamic_sac_insert(it1->first.c_str(), it1->second, gamma_2);
+				s[k]->dynamic_sead_insert(it1->first.c_str(), it1->second, gamma_2);
 			}
 		}
 		// read random sequence
@@ -286,7 +286,7 @@ void webpage_experiment(int sketch, int version, int arr, int l, double& bits_in
 					fpp[k] += 1;
 			}
 			else  {
-				if (s[k]->dynamic_sac_query(tmp.c_str(), gamma_2) != 0)
+				if (s[k]->dynamic_sead_query(tmp.c_str(), gamma_2) != 0)
 					fpp[k] += 1;
 			}
 		}
@@ -301,7 +301,7 @@ void webpage_experiment(int sketch, int version, int arr, int l, double& bits_in
 
 void synthetic_experiment(int sketch, int version, int arr, int i, int l, double& bits_in_elements, double& err) {
 	//a is the skewness parameter of Zipf distribution, n is the memory size(in KB) and m is the number of arrays used in the sketch
-	cout << "your sketch number is: " << sketch << " (0~3 for 'CBF', 'VI-CBF', 'SACCBF', or 'VI-SACCBF')" << endl;
+	cout << "your sketch number is: " << sketch << " (0~3 for 'CBF', 'VI-CBF', 'SEADCBF', or 'VI-SEADCBF')" << endl;
 	int m = 12;
 	int n = l;
 	int a_zipf = i;
@@ -324,13 +324,13 @@ void synthetic_experiment(int sketch, int version, int arr, int i, int l, double
 		for (int i = 0; i < 12; ++i) {
 			s[i] = new CBF(n * 1024 / 2 / m, m);
 		}
-		cout << "SAC CBF with " << n << "KB hash memory generated!" << endl;
+		cout << "SEAD CBF with " << n << "KB hash memory generated!" << endl;
 	}
 	if (sketch == 3) {
 		for (int i = 0; i < 12; ++i) {
 			s[i] = new VI_CBF(n * 1024 / 2 / m, m);
 		}
-		cout << "SAC VI-CBF with " << n << "KB hash memory generated!" << endl;
+		cout << "SEAD VI-CBF with " << n << "KB hash memory generated!" << endl;
 	}
 
 
@@ -372,7 +372,7 @@ void synthetic_experiment(int sketch, int version, int arr, int i, int l, double
 			if (sketch <= 1)
 				s[k]->Insert(it1->first.c_str(), it1->second);
 			else  {
-				s[k]->dynamic_sac_insert(it1->first.c_str(), it1->second, gamma_2);
+				s[k]->dynamic_sead_insert(it1->first.c_str(), it1->second, gamma_2);
 			}
 		}
 
@@ -385,7 +385,7 @@ void synthetic_experiment(int sketch, int version, int arr, int i, int l, double
 					fpp[k] += 1;
 			}
 			else {
-				if (s[k]->dynamic_sac_query(tmp.c_str(), gamma_2) != 0)
+				if (s[k]->dynamic_sead_query(tmp.c_str(), gamma_2) != 0)
 					fpp[k] += 1;
 			}
 		}

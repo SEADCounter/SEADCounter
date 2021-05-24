@@ -21,7 +21,7 @@ const uint16_t long_powers[20]={1,2,4,8,16,32,64,128,
                       8192,16384,32768}; //list out the power of 2 for later use
 
 const sign edge[8]={0,64,96,112,120,124,126,127};
-//edges are the value of counter for the starting of each stages for SAC
+//edges are the value of counter for the starting of each stages for SEAD
 const long_sign long_edge[17]={0,16384,24576,28672,30720,31744,32256,32512,32640,32704,32752,32760,32764,32766,32767};
 
 
@@ -38,9 +38,9 @@ const long_sign long_mini=-32767;
 
 void greeting(){
     cout<<"***************"<<endl;
-    cout<<"**This is SAC**"<<endl;
+    cout<<"**This is SEAD**"<<endl;
     cout<<"***************"<<endl<<endl;
-    cout<<"Welcome! To test SAC on different datasets,"<<endl;
+    cout<<"Welcome! To test SEAD on different datasets,"<<endl;
     cout<<"Type 'CAIDA','webpage' or 'synthetic'"<<endl;
 }
 
@@ -59,7 +59,7 @@ void bprint(long_sign x){ //print binary value of x
 }
 
 
-int get_val(type x,int base=0){//return the actual unsigned value stored in one SAC
+int get_val(type x,int base=0){//return the actual unsigned value stored in one SEAD
     //base is the starting scale. 0 meaning multiply by 2^0
     unsigned short pos=0; //0 means the seperating 0-bit starts at the front
     type delta=high_bit;
@@ -74,7 +74,7 @@ int get_val(type x,int base=0){//return the actual unsigned value stored in one 
     return ((ones&x)<<(pos+base))+(128*pos*pow(2,base));
 }
 
-int get_signed_val(sign x,int base=0){ //return the actual signed value stored in one SAC
+int get_signed_val(sign x,int base=0){ //return the actual signed value stored in one SEAD
     if(x>=125)return MAX_CNT;
     if(x<=-125)return MIN_CNT;
     unsigned short pos=0;
@@ -104,7 +104,7 @@ int get_signed_val(sign x,int base=0){ //return the actual signed value stored i
     }
 }
 
-//this function retures the value of signed 8-bit SAC
+//this function retures the value of signed 8-bit SEAD
 double predict(sign x,double *gamma){ 
     if(x>=125)return MAX_CNT;
     if(x<=-125)return MIN_CNT;
@@ -143,9 +143,9 @@ double predict(sign x,double *gamma){
     }
 }
 
-//this function returns the predict value of an 16-bit static version SAC
+//this function returns the predict value of an 16-bit static version SEAD
 double predict(long_sign x, int l_sign,double *gamma){  //l_sign is the length of sign section
-    long_sign delta=long_second_high_bit; //This variable is used to get the value of certain bit in SAC
+    long_sign delta=long_second_high_bit; //This variable is used to get the value of certain bit in SEAD
     int sign_bits=0;
     int ones=0;
     double ret=0;
@@ -187,7 +187,7 @@ double predict(long_sign x, int l_sign,double *gamma){  //l_sign is the length o
     }
 }
 
-//this function returns the predict value of an 16-bit dynamic version SAC
+//this function returns the predict value of an 16-bit dynamic version SEAD
 double predict(long_sign x,double *gamma){
     unsigned short pos=0;
     long_sign delta=long_second_high_bit;
@@ -240,7 +240,7 @@ void add_one(type &x){
     return;
 }
 
-//this a the procedure to add one on a signed 8-bit SAC
+//this a the procedure to add one on a signed 8-bit SEAD
 void add_one(sign &x, int base){
     if(x>=125){cout<<"overflow!"<<endl;return;}
     unsigned short pos=0;
@@ -265,7 +265,7 @@ void add_one(sign &x, int base){
 
 }
 
-//this is the add one function for fixed version of 16-bit SAC
+//this is the add one function for fixed version of 16-bit SEAD
 void add_one(long_sign &x, int l_sign,double* gamma){
     if(predict(x,gamma)+1 >= predict(long_maxi,gamma)){
         cout<<"overflow!"<<endl;
@@ -300,7 +300,7 @@ void add_one(long_sign &x, int l_sign,double* gamma){
 
 }
 
-//this is the minus one function for fixed version of 16-bit SAC
+//this is the minus one function for fixed version of 16-bit SEAD
 void minus_one(long_sign &x, int l_sign,double* gamma){
     if(predict(x,gamma)-1 <= predict(long_mini,gamma)){
         cout<<"underflow!"<<endl;
@@ -335,7 +335,7 @@ void minus_one(long_sign &x, int l_sign,double* gamma){
 
 }
 
-//this function adds c to a signed 8-bit SAC
+//this function adds c to a signed 8-bit SEAD
 void adding(sign &x,int c,double *gamma){
     if(c<0){cout<<"illeagal adding"<<endl;return;}
     if(x>=125){cout<<"overflow!"<<endl;return;}
@@ -458,7 +458,7 @@ void adding(long_sign &x,int c,double *gamma){
     }
 }
 
-//this function substract c from the 16-bit Dynamic version of SAC
+//this function substract c from the 16-bit Dynamic version of SEAD
 void subtracting(long_sign &x, int c,double *gamma){
     if(c<0){cout<<"illeagal subtracting"<<endl;return;}
     if( ((predict(x,gamma))-c) <= predict(long_mini,gamma) ){
@@ -520,7 +520,7 @@ void subtracting(long_sign &x, int c,double *gamma){
     }
 }
 
-//this function substract c from the 8-bit SAC
+//this function substract c from the 8-bit SEAD
 void subtracting(sign &x,int c,double *gamma){
 
     if(x<=-125){cout<<"underflow!"<<endl;return;}
